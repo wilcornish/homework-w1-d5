@@ -36,3 +36,12 @@ def find_pet_by_name(shop, searched_name)
   end
   return nil
 end
+
+def remove_pet_by_name(shop, deleted_name)
+
+end
+
+def add_pet_to_stock(shop, new_pet)
+  shop[:pets].push(new_pet)
+  shop[:admin][:pets_sold] += 1
+end
