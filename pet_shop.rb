@@ -41,12 +41,10 @@ def remove_pet_by_name(shop, name_to_delete)
   for pet in shop[:pets]
   shop[:pets].delete(pet) if pet[:name] == name_to_delete
   end
-  shop[:admin][:pets_sold] -= 1
 end
 
 def add_pet_to_stock(shop, new_pet)
   shop[:pets].push(new_pet)
-  shop[:admin][:pets_sold] += 1
 end
 
 def customer_cash(customer)
@@ -65,10 +63,20 @@ def add_pet_to_customer(customer, pet)
   customer[:pets].push(pet)
 end
 
-def sell_pet_to_customer(shop, pet, customer)
-# return A THING if customer_can_afford_pet(customer, pet) != true
-# return A THING if find_pet_by_name(pet) == nil
-add_pet_to_customer(customer, pet)
-remove_customer_cash(pet[:price])
-add_or_remove_cash(pet[:price])
+def customer_can_afford_pet(customer, pet)
+  customer[:cash] >= pet[:price]
 end
+
+def sell_pet_to_customer(shop, pet, customer)
+return if pet == nil
+return if customer_can_afford_pet(customer, pet) != true
+
+add_pet_to_customer(customer, pet)
+remove_customer_cash(customer, pet[:price])
+add_or_remove_cash(shop, pet[:price])
+increase_pets_sold(shop, 1)
+end
+
+# current errors:
+# - returning nil for pet (line 72) doesn't end process but instead feeds nil to later functions
+# - successful sell of pet does not cause increase customer pet?
